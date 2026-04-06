@@ -9,6 +9,14 @@ function hasDatabaseUrl() {
   return Boolean(process.env.DATABASE_URL);
 }
 
+function isProductionBuild() {
+  return process.env.NEXT_PHASE === "phase-production-build";
+}
+
+function shouldUseDatabase() {
+  return hasDatabaseUrl() && !isProductionBuild();
+}
+
 function toJobListing(job: DbJobListing): JobListing {
   return {
     sourceCompany: job.sourceCompany,
@@ -34,7 +42,7 @@ function logFallback(error: unknown) {
 }
 
 export async function getJobs() {
-  if (!hasDatabaseUrl()) {
+  if (!shouldUseDatabase()) {
     return curatedJobs;
   }
 
@@ -50,7 +58,7 @@ export async function getJobs() {
 }
 
 export async function getJobBySlug(slug: string) {
-  if (hasDatabaseUrl()) {
+  if (shouldUseDatabase()) {
     try {
       const db = getDb();
       const rows = await db.select().from(jobListings).where(eq(jobListings.slug, slug)).limit(1);
