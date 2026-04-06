@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { companies, curatedJobs, getAllGuides } from "@bigfive/content";
+import { companies, getAllGuides } from "@bigfive/content";
 
 import { ApplyButton } from "@/components/apply-button";
 import { Chip } from "@/components/chip";
 import { GuideCard } from "@/components/guide-card";
+import { getJobBySlug, getJobs } from "@/lib/job-source";
 import { getApplyLinkQuality, getJobDataQualityWarnings } from "@/lib/jobs";
 import { formatDate, absoluteUrl } from "@/lib/utils";
 
 export async function generateStaticParams() {
-  return curatedJobs.map((job) => ({ slug: job.slug }));
+  const jobs = await getJobs();
+  return jobs.map((job) => ({ slug: job.slug }));
 }
 
 export async function generateMetadata({
@@ -19,7 +21,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const job = curatedJobs.find((entry) => entry.slug === slug);
+  const job = await getJobBySlug(slug);
 
   if (!job) {
     return {};
@@ -40,7 +42,7 @@ export default async function JobDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const job = curatedJobs.find((entry) => entry.slug === slug);
+  const job = await getJobBySlug(slug);
 
   if (!job) {
     notFound();

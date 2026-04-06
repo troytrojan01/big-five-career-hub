@@ -1,10 +1,12 @@
-import { companies, curatedJobs, getAllGuides } from "@bigfive/content";
+import { companies, getAllGuides } from "@bigfive/content";
 import type { MetadataRoute } from "next";
 
+import { getJobs } from "@/lib/job-source";
 import { absoluteUrl } from "@/lib/utils";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes = ["", "/jobs", "/prep", "/resources"];
+  const jobs = await getJobs();
 
   return [
     ...staticRoutes.map((route) => ({
@@ -15,7 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: absoluteUrl(`/companies/${company.slug}`),
       lastModified: new Date(),
     })),
-    ...curatedJobs.map((job) => ({
+    ...jobs.map((job) => ({
       url: absoluteUrl(`/jobs/${job.slug}`),
       lastModified: new Date(job.lastVerifiedAt),
     })),

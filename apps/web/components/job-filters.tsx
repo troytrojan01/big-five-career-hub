@@ -1,15 +1,17 @@
-import { companies, curatedJobs, roleFamilies } from "@bigfive/content";
+import { companies, roleFamilies, type JobListing } from "@bigfive/content";
 
 import { uniqueValues } from "@/lib/jobs";
 
 export function JobFilters({
+  jobs,
   searchParams,
 }: {
+  jobs: JobListing[];
   searchParams: Record<string, string | string[] | undefined>;
 }) {
-  const levels = uniqueValues(curatedJobs.map((job) => job.level));
-  const locations = uniqueValues(curatedJobs.map((job) => job.location));
-  const teams = uniqueValues(curatedJobs.map((job) => job.team));
+  const levels = uniqueValues(jobs.map((job) => job.level));
+  const locations = uniqueValues(jobs.map((job) => job.location));
+  const teams = uniqueValues(jobs.map((job) => job.team));
 
   return (
     <form className="grid gap-4 rounded-4xl border border-ink/10 bg-white p-6 shadow-float md:grid-cols-3 xl:grid-cols-8">

@@ -1,16 +1,18 @@
 import Link from "next/link";
 import { ArrowRight, BriefcaseBusiness, GraduationCap, Sparkles } from "lucide-react";
 
-import { companies, curatedJobs, getAllGuides } from "@bigfive/content";
+import { companies, getAllGuides } from "@bigfive/content";
 
 import { CompanyCard } from "@/components/company-card";
 import { GuideCard } from "@/components/guide-card";
 import { JobCard } from "@/components/job-card";
 import { SectionHeading } from "@/components/section-heading";
 import { WaitlistForm } from "@/components/waitlist-form";
+import { getJobs } from "@/lib/job-source";
 
-export default function HomePage() {
-  const featuredJobs = curatedJobs.filter((job) => job.isFeatured).slice(0, 4);
+export default async function HomePage() {
+  const jobs = await getJobs();
+  const featuredJobs = jobs.filter((job) => job.isFeatured).slice(0, 4);
   const featuredGuides = getAllGuides().slice(0, 6);
 
   return (
@@ -39,7 +41,7 @@ export default function HomePage() {
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             <div className="rounded-4xl border border-ink/10 bg-white/80 p-5 shadow-sm">
               <BriefcaseBusiness className="h-5 w-5 text-ink" />
-              <p className="mt-3 text-2xl font-semibold text-ink">{curatedJobs.length}</p>
+              <p className="mt-3 text-2xl font-semibold text-ink">{jobs.length}</p>
               <p className="text-sm text-slate">Curated official-role links</p>
             </div>
             <div className="rounded-4xl border border-ink/10 bg-white/80 p-5 shadow-sm">

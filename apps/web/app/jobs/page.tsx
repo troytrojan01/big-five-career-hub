@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 
-import { curatedJobs } from "@bigfive/content";
-
 import { JobCard } from "@/components/job-card";
 import { JobFilters } from "@/components/job-filters";
 import { SectionHeading } from "@/components/section-heading";
+import { getJobs } from "@/lib/job-source";
 import { filterJobs } from "@/lib/jobs";
 
 export const metadata: Metadata = {
@@ -18,7 +17,8 @@ export default async function JobsPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const params = await searchParams;
-  const jobs = filterJobs(curatedJobs, {
+  const allJobs = await getJobs();
+  const jobs = filterJobs(allJobs, {
     company: typeof params.company === "string" ? params.company : undefined,
     level: typeof params.level === "string" ? params.level : undefined,
     location: typeof params.location === "string" ? params.location : undefined,
@@ -37,7 +37,7 @@ export default async function JobsPage({
         description="Search by company, role family, level, location, team, and work mode. Stale roles automatically drop out once they fall outside the verification window."
       />
       <div className="mt-10">
-        <JobFilters searchParams={params} />
+        <JobFilters jobs={allJobs} searchParams={params} />
       </div>
       <div className="mt-10 flex items-center justify-between text-sm text-slate">
         <p>{jobs.length} active roles</p>

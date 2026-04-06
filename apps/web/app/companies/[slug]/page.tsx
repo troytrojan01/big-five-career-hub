@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { companies, curatedJobs, getAllCompanyHubs, getAllGuides } from "@bigfive/content";
+import { companies, getAllCompanyHubs, getAllGuides } from "@bigfive/content";
 
 import { Chip } from "@/components/chip";
 import { GuideCard } from "@/components/guide-card";
 import { JobCard } from "@/components/job-card";
+import { getJobs } from "@/lib/job-source";
 import { renderMdx } from "@/lib/mdx";
 import { absoluteUrl } from "@/lib/utils";
 
@@ -47,7 +48,8 @@ export default async function CompanyHubPage({
   }
 
   const companyRecord = companies.find((entry) => entry.slug === slug);
-  const relatedJobs = curatedJobs.filter((job) => job.sourceCompany === slug).slice(0, 3);
+  const jobs = await getJobs();
+  const relatedJobs = jobs.filter((job) => job.sourceCompany === slug).slice(0, 3);
   const relatedGuides = getAllGuides().filter((guide) => guide.company === slug);
   const { content } = renderMdx(company.body);
 

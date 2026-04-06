@@ -1,10 +1,11 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 
-import { companies, curatedJobs } from "@bigfive/content";
+import { companies } from "@bigfive/content";
 
 import { Chip } from "@/components/chip";
 import { SectionHeading } from "@/components/section-heading";
+import { getJobs } from "@/lib/job-source";
 import { getApplyLinkQuality, getJobDataQualityWarnings, getJobFreshnessLabel, getJobStatus } from "@/lib/jobs";
 import { formatDate } from "@/lib/utils";
 
@@ -16,12 +17,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AdminJobsPage() {
+export default async function AdminJobsPage() {
   const now = new Date();
-  const activeJobs = curatedJobs.filter((job) => getJobStatus(job, now) === "active");
-  const staleJobs = curatedJobs.filter((job) => getJobStatus(job, now) === "inactive");
-  const featuredJobs = curatedJobs.filter((job) => job.isFeatured);
-  const jobsNeedingLinkReview = curatedJobs.filter((job) => getApplyLinkQuality(job).kind !== "exact");
+  const jobs = await getJobs();
+  const activeJobs = jobs.filter((job) => getJobStatus(job, now) === "active");
+  const staleJobs = jobs.filter((job) => getJobStatus(job, now) === "inactive");
+  const featuredJobs = jobs.filter((job) => job.isFeatured);
+  const jobsNeedingLinkReview = jobs.filter((job) => getApplyLinkQuality(job).kind !== "exact");
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-16">
@@ -34,7 +36,7 @@ export default function AdminJobsPage() {
       <div className="mt-10 grid gap-4 md:grid-cols-4">
         <div className="rounded-4xl border border-ink/10 bg-white p-6 shadow-float">
           <p className="text-sm uppercase tracking-[0.18em] text-slate">Total</p>
-          <p className="mt-3 text-3xl font-semibold text-ink">{curatedJobs.length}</p>
+          <p className="mt-3 text-3xl font-semibold text-ink">{jobs.length}</p>
         </div>
         <div className="rounded-4xl border border-ink/10 bg-white p-6 shadow-float">
           <p className="text-sm uppercase tracking-[0.18em] text-slate">Active</p>
@@ -85,7 +87,7 @@ export default function AdminJobsPage() {
               </tr>
             </thead>
             <tbody>
-              {curatedJobs.map((job) => {
+              {jobs.map((job) => {
                 const company = companies.find((entry) => entry.slug === job.sourceCompany);
                 const status = getJobStatus(job, now);
                 const applyLinkQuality = getApplyLinkQuality(job);

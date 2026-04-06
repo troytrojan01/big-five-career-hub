@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { companies, curatedJobs, getAllGuides, getGuideBySlug } from "@bigfive/content";
+import { companies, getAllGuides, getGuideBySlug } from "@bigfive/content";
 
 import { Chip } from "@/components/chip";
 import { GuideCard } from "@/components/guide-card";
 import { JobCard } from "@/components/job-card";
 import { getGuideJobs, getRelatedGuides } from "@/lib/guides";
+import { getJobs } from "@/lib/job-source";
 import { renderMdx } from "@/lib/mdx";
 import { absoluteUrl } from "@/lib/utils";
 
@@ -50,9 +51,10 @@ export default async function GuidePage({
 
   const { content } = renderMdx(guide.body);
   const allGuides = getAllGuides();
+  const jobs = await getJobs();
   const company = companies.find((entry) => entry.slug === guide.company);
   const relatedGuides = getRelatedGuides(allGuides, guide);
-  const relatedJobs = getGuideJobs(curatedJobs, guide);
+  const relatedJobs = getGuideJobs(jobs, guide);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
