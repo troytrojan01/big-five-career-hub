@@ -23,6 +23,7 @@ A US-first monorepo for a focused Big Tech jobs and interview prep product cover
 - `npm run lint`
 - `npm run test`
 - `npm run readiness:content`
+- `npm run smoke:db`
 - `npm run db:generate`
 - `npm run db:migrate`
 - `npm run db:push`
@@ -34,6 +35,7 @@ A US-first monorepo for a focused Big Tech jobs and interview prep product cover
 - Jobs are manually curated and link to official employer apply pages.
 - The waitlist and admin import endpoints expect a live PostgreSQL `DATABASE_URL`.
 - Use a least-privileged app role for `DATABASE_URL` when possible. Use `MIGRATION_DATABASE_URL` only for schema migrations that need elevated database privileges.
+- `npm run smoke:db` verifies live database reads plus temporary waitlist and admin-import writes, then cleans up its test rows.
 - If the database is not configured, the import flow still provides validation previews.
 - Seed data pulls the launch companies and curated jobs from `@bigfive/content`.
 - Admin job operations are available at `/admin/jobs`; CSV/JSON import validation is available at `/admin/import`.

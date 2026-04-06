@@ -29,6 +29,14 @@ npm run build
 npm audit --omit=dev
 ```
 
+When `DATABASE_URL` points at a live database, run this smoke check:
+
+```bash
+npm run smoke:db
+```
+
+It confirms seeded company/job reads plus temporary waitlist and admin-import writes, then removes the smoke rows.
+
 Use this content check before a public launch:
 
 ```bash

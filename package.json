@@ -12,6 +12,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "readiness:content": "tsx scripts/check-content-readiness.ts",
+    "smoke:db": "tsx scripts/smoke-live-db.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx packages/db/src/migrate.ts",
     "db:push": "drizzle-kit push",
