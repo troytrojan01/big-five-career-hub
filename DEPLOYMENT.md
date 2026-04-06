@@ -29,6 +29,14 @@ npm run build
 npm audit --omit=dev
 ```
 
+Run the environment readiness check with your deployment env loaded:
+
+```bash
+npm run readiness:env
+```
+
+This check is intentionally stricter than local development and should fail until production-grade `ADMIN_PASSWORD` and database credentials are configured.
+
 When `DATABASE_URL` points at a live database, run this smoke check:
 
 ```bash
