@@ -49,7 +49,7 @@ export default async function CompanyHubPage({
   const companyRecord = companies.find((entry) => entry.slug === slug);
   const relatedJobs = curatedJobs.filter((job) => job.sourceCompany === slug).slice(0, 3);
   const relatedGuides = getAllGuides().filter((guide) => guide.company === slug);
-  const { content } = await renderMdx(company.body);
+  const { content } = renderMdx(company.body);
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-16">

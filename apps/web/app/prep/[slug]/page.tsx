@@ -48,7 +48,7 @@ export default async function GuidePage({
     notFound();
   }
 
-  const { content } = await renderMdx(guide.body);
+  const { content } = renderMdx(guide.body);
   const allGuides = getAllGuides();
   const company = companies.find((entry) => entry.slug === guide.company);
   const relatedGuides = getRelatedGuides(allGuides, guide);
