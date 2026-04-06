@@ -33,3 +33,4 @@ A US-first monorepo for a focused Big Tech jobs and interview prep product cover
 - The waitlist and admin import endpoints expect a live PostgreSQL `DATABASE_URL`.
 - If the database is not configured, the import flow still provides validation previews.
 - Seed data pulls the launch companies and curated jobs from `@bigfive/content`.
+- Admin job operations are available at `/admin/jobs`; CSV/JSON import validation is available at `/admin/import`.

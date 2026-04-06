@@ -4,7 +4,7 @@ import type { MetadataRoute } from "next";
 import { absoluteUrl } from "@/lib/utils";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticRoutes = ["", "/jobs", "/prep", "/resources", "/admin/import"];
+  const staticRoutes = ["", "/jobs", "/prep", "/resources", "/admin/jobs", "/admin/import"];
 
   return [
     ...staticRoutes.map((route) => ({

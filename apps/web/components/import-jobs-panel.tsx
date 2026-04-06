@@ -3,6 +3,20 @@
 import { FormEvent, useState, useTransition } from "react";
 
 import type { ImportPreview } from "@/lib/import-jobs";
+import { createCsvTemplate, createJsonTemplate } from "@/lib/import-template";
+
+function downloadTemplate(format: "csv" | "json") {
+  const content = format === "csv" ? createCsvTemplate() : createJsonTemplate();
+  const blob = new Blob([content], {
+    type: format === "csv" ? "text/csv" : "application/json",
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `big-five-jobs-template.${format}`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
 
 export function ImportJobsPanel() {
   const [message, setMessage] = useState("");
@@ -35,6 +49,22 @@ export function ImportJobsPanel() {
         <p className="mt-3 text-slate">
           Upload CSV or JSON for validation. The API requires `officialApplyUrl` and `lastVerifiedAt`, and it automatically flags stale roles inactive after 48 hours.
         </p>
+        <div className="mt-5 flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={() => downloadTemplate("csv")}
+            className="rounded-full border border-ink/10 bg-sand px-4 py-2 text-sm font-medium text-ink"
+          >
+            Download CSV template
+          </button>
+          <button
+            type="button"
+            onClick={() => downloadTemplate("json")}
+            className="rounded-full border border-ink/10 bg-sand px-4 py-2 text-sm font-medium text-ink"
+          >
+            Download JSON template
+          </button>
+        </div>
         <div className="mt-6 grid gap-4">
           <label className="grid gap-2 text-sm font-medium text-ink">
             Format
@@ -79,7 +109,19 @@ export function ImportJobsPanel() {
             <p>Total rows: {preview.total}</p>
             <p>Valid rows: {preview.valid}</p>
             <p>Invalid rows: {preview.invalid}</p>
+            <p>Stale rows: {preview.stale}</p>
+            <p>Duplicate rows: {preview.duplicates}</p>
             <p>Inserted rows: {preview.inserted}</p>
+            {preview.warnings.length ? (
+              <div>
+                <p className="font-medium text-ink">Warnings</p>
+                <ul className="mt-2 space-y-2">
+                  {preview.warnings.map((warning) => (
+                    <li key={warning}>{warning}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
             {preview.errors.length ? (
               <div>
                 <p className="font-medium text-ink">Errors</p>

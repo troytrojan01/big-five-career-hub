@@ -10,6 +10,7 @@ export interface JobFilters {
 }
 
 const FRESHNESS_WINDOW_MS = 1000 * 60 * 60 * 48;
+const HOUR_MS = 1000 * 60 * 60;
 
 export function isJobFresh(lastVerifiedAt: string, now = new Date()) {
   return now.getTime() - new Date(lastVerifiedAt).getTime() <= FRESHNESS_WINDOW_MS;
@@ -21,6 +22,24 @@ export function getJobStatus(job: JobListing, now = new Date()) {
   }
 
   return isJobFresh(job.lastVerifiedAt, now) ? "active" : "inactive";
+}
+
+export function getHoursSinceVerification(lastVerifiedAt: string, now = new Date()) {
+  return Math.max(0, Math.floor((now.getTime() - new Date(lastVerifiedAt).getTime()) / HOUR_MS));
+}
+
+export function getJobFreshnessLabel(job: JobListing, now = new Date()) {
+  const hours = getHoursSinceVerification(job.lastVerifiedAt, now);
+
+  if (getJobStatus(job, now) === "inactive") {
+    return `Needs recheck (${hours}h old)`;
+  }
+
+  if (hours >= 36) {
+    return `Recheck soon (${hours}h old)`;
+  }
+
+  return `Fresh (${hours}h old)`;
 }
 
 export function filterJobs(jobs: JobListing[], filters: JobFilters, now = new Date()) {

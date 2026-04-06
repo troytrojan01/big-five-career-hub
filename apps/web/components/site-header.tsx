@@ -4,7 +4,7 @@ const navItems = [
   { href: "/jobs", label: "Jobs" },
   { href: "/prep", label: "Interview Prep" },
   { href: "/resources", label: "Resources" },
-  { href: "/admin/import", label: "Admin" },
+  { href: "/admin/jobs", label: "Admin" },
 ];
 
 export function SiteHeader() {
