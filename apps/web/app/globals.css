@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  background:
+    radial-gradient(circle at top left, rgba(217, 242, 255, 0.8), transparent 30%),
+    radial-gradient(circle at top right, rgba(223, 246, 232, 0.8), transparent 35%),
+    linear-gradient(180deg, #fff8ec 0%, #fffdf8 100%);
+}
+
+body {
+  color: #111827;
+  min-height: 100vh;
+  background-image: radial-gradient(circle at 1px 1px, rgba(17, 24, 39, 0.04) 1px, transparent 0);
+  background-size: 28px 28px;
+  font-family: "Space Grotesk", "Avenir Next", "Segoe UI", sans-serif;
+}
+
+.font-serif {
+  font-family: "Newsreader", "Iowan Old Style", "Georgia", serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+.prose :where(a):not(:where([class~="not-prose"] *)) {
+  color: #111827;
+  font-weight: 600;
+}

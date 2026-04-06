@@ -1,0 +1,10 @@
+node_modules
+.next
+.turbo
+coverage
+dist
+.DS_Store
+.env
+.env.local
+.env.*.local
+drizzle

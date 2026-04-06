@@ -1,0 +1,27 @@
+{
+  "name": "big-five-career-hub",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @bigfive/web",
+    "build": "npm run build -w @bigfive/web",
+    "lint": "npm run lint -w @bigfive/web",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx packages/db/src/migrate.ts",
+    "db:push": "drizzle-kit push",
+    "db:seed": "tsx packages/db/src/seed.ts",
+    "db:setup": "npm run db:migrate && npm run db:seed"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.1",
+    "drizzle-kit": "^0.31.1",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
+  }
+}
