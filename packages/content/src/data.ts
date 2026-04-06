@@ -166,7 +166,7 @@ export const curatedJobs: JobListing[] = [
       "Improve ranking systems and experimentation velocity for customer-facing personalization experiences.",
     officialApplyUrl: "https://www.amazon.jobs/",
     postedAt: "2026-04-01T11:00:00.000Z",
-    lastVerifiedAt: "2026-04-04T08:00:00.000Z",
+    lastVerifiedAt: "2026-04-06T12:00:00.000Z",
     status: "active"
   },
   {

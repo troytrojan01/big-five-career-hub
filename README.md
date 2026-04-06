@@ -22,6 +22,7 @@ A US-first monorepo for a focused Big Tech jobs and interview prep product cover
 - `npm run build`
 - `npm run lint`
 - `npm run test`
+- `npm run readiness:content`
 - `npm run db:generate`
 - `npm run db:migrate`
 - `npm run db:push`
@@ -36,3 +37,4 @@ A US-first monorepo for a focused Big Tech jobs and interview prep product cover
 - Seed data pulls the launch companies and curated jobs from `@bigfive/content`.
 - Admin job operations are available at `/admin/jobs`; CSV/JSON import validation is available at `/admin/import`.
 - Admin routes use HTTP Basic Auth when `ADMIN_USERNAME` and `ADMIN_PASSWORD` are set. In production, missing admin credentials block admin access.
+- Deployment notes live in `DEPLOYMENT.md`.
