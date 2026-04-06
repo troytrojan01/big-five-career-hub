@@ -4,7 +4,7 @@ import { companies, curatedJobs } from "@bigfive/content";
 
 import { Chip } from "@/components/chip";
 import { SectionHeading } from "@/components/section-heading";
-import { getJobFreshnessLabel, getJobStatus } from "@/lib/jobs";
+import { getApplyLinkQuality, getJobDataQualityWarnings, getJobFreshnessLabel, getJobStatus } from "@/lib/jobs";
 import { formatDate } from "@/lib/utils";
 
 export default function AdminJobsPage() {
@@ -12,6 +12,7 @@ export default function AdminJobsPage() {
   const activeJobs = curatedJobs.filter((job) => getJobStatus(job, now) === "active");
   const staleJobs = curatedJobs.filter((job) => getJobStatus(job, now) === "inactive");
   const featuredJobs = curatedJobs.filter((job) => job.isFeatured);
+  const jobsNeedingLinkReview = curatedJobs.filter((job) => getApplyLinkQuality(job).kind !== "exact");
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-16">
@@ -37,6 +38,13 @@ export default function AdminJobsPage() {
         <div className="rounded-4xl border border-ink/10 bg-white p-6 shadow-float">
           <p className="text-sm uppercase tracking-[0.18em] text-slate">Featured</p>
           <p className="mt-3 text-3xl font-semibold text-ink">{featuredJobs.length}</p>
+        </div>
+        <div className="rounded-4xl border border-ink/10 bg-white p-6 shadow-float md:col-span-4">
+          <p className="text-sm uppercase tracking-[0.18em] text-slate">Link review queue</p>
+          <p className="mt-3 text-3xl font-semibold text-ink">{jobsNeedingLinkReview.length}</p>
+          <p className="mt-2 text-sm text-slate">
+            Roles using official search or generic careers pages should be upgraded to exact official job URLs before launch.
+          </p>
         </div>
       </div>
 
@@ -71,6 +79,8 @@ export default function AdminJobsPage() {
               {curatedJobs.map((job) => {
                 const company = companies.find((entry) => entry.slug === job.sourceCompany);
                 const status = getJobStatus(job, now);
+                const applyLinkQuality = getApplyLinkQuality(job);
+                const dataQualityWarnings = getJobDataQualityWarnings(job, now);
 
                 return (
                   <tr key={job.slug} className="border-t border-ink/10 align-top">
@@ -83,9 +93,17 @@ export default function AdminJobsPage() {
                     <td className="px-6 py-4 text-slate">{job.location}</td>
                     <td className="px-6 py-4 text-slate">{formatDate(job.lastVerifiedAt)}</td>
                     <td className="px-6 py-4">
-                      <Chip className={status === "active" ? "bg-mint" : "bg-coral"}>
-                        {getJobFreshnessLabel(job, now)}
-                      </Chip>
+                      <div className="flex flex-col gap-2">
+                        <Chip className={status === "active" ? "bg-mint" : "bg-coral"}>
+                          {getJobFreshnessLabel(job, now)}
+                        </Chip>
+                        <Chip className={applyLinkQuality.kind === "exact" ? "bg-mint" : "bg-coral"}>
+                          {applyLinkQuality.label}
+                        </Chip>
+                        {dataQualityWarnings.length ? (
+                          <p className="max-w-xs text-xs leading-5 text-slate">{dataQualityWarnings.join(" ")}</p>
+                        ) : null}
+                      </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-wrap gap-2">

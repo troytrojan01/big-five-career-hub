@@ -3,9 +3,12 @@ import Link from "next/link";
 import type { JobListing } from "@bigfive/content";
 
 import { Chip } from "@/components/chip";
+import { getApplyLinkQuality } from "@/lib/jobs";
 import { formatDate } from "@/lib/utils";
 
 export function JobCard({ job }: { job: JobListing }) {
+  const applyLinkQuality = getApplyLinkQuality(job);
+
   return (
     <article className="rounded-4xl border border-ink/10 bg-white p-6 shadow-float transition hover:-translate-y-1">
       <div className="flex flex-wrap gap-2">
@@ -13,6 +16,9 @@ export function JobCard({ job }: { job: JobListing }) {
         <Chip>{job.roleFamily}</Chip>
         <Chip>{job.level}</Chip>
         <Chip>{job.workMode}</Chip>
+        <Chip className={applyLinkQuality.kind === "exact" ? "bg-mint" : "bg-coral"}>
+          {applyLinkQuality.label}
+        </Chip>
       </div>
       <h3 className="mt-5 text-2xl font-semibold text-ink">{job.title}</h3>
       <p className="mt-2 text-sm uppercase tracking-[0.16em] text-slate">{job.team}</p>

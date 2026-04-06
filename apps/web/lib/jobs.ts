@@ -6,7 +6,9 @@ export interface JobFilters {
   level?: string;
   location?: string;
   workMode?: string;
+  team?: string;
   search?: string;
+  sort?: string;
 }
 
 const FRESHNESS_WINDOW_MS = 1000 * 60 * 60 * 48;
@@ -42,6 +44,59 @@ export function getJobFreshnessLabel(job: JobListing, now = new Date()) {
   return `Fresh (${hours}h old)`;
 }
 
+export function getApplyLinkQuality(job: JobListing) {
+  const url = new URL(job.officialApplyUrl);
+  const path = url.pathname.replace(/\/$/, "");
+  const externalId = job.externalJobId.toLowerCase();
+  const normalizedUrl = job.officialApplyUrl.toLowerCase();
+  const genericPaths = new Set([
+    "",
+    "/",
+    "/jobs",
+    "/en-us/search",
+    "/v2/global/en/search-results",
+    "/about/careers/applications/jobs/results",
+  ]);
+
+  if (normalizedUrl.includes(externalId)) {
+    return {
+      kind: "exact" as const,
+      label: "Exact official job link",
+      description: "This CTA appears to point directly to the employer's role page.",
+    };
+  }
+
+  if (genericPaths.has(path)) {
+    return {
+      kind: "search" as const,
+      label: "Official careers search",
+      description: "This CTA goes to an official company search page, so candidates may need to search the title or team.",
+    };
+  }
+
+  return {
+    kind: "review" as const,
+    label: "Official link to review",
+    description: "This CTA points to an official employer page, but it should be checked before publishing as an exact role link.",
+  };
+}
+
+export function getJobDataQualityWarnings(job: JobListing, now = new Date()) {
+  const warnings: string[] = [];
+  const freshnessStatus = getJobStatus(job, now);
+  const applyLinkQuality = getApplyLinkQuality(job);
+
+  if (freshnessStatus === "inactive") {
+    warnings.push("This role is outside the 48-hour verification window.");
+  }
+
+  if (applyLinkQuality.kind !== "exact") {
+    warnings.push(applyLinkQuality.description);
+  }
+
+  return warnings;
+}
+
 export function filterJobs(jobs: JobListing[], filters: JobFilters, now = new Date()) {
   const normalizedSearch = filters.search?.trim().toLowerCase();
 
@@ -70,6 +125,10 @@ export function filterJobs(jobs: JobListing[], filters: JobFilters, now = new Da
       return false;
     }
 
+    if (filters.team && job.team !== filters.team) {
+      return false;
+    }
+
     if (normalizedSearch) {
       const haystack = [
         job.title,
@@ -86,6 +145,16 @@ export function filterJobs(jobs: JobListing[], filters: JobFilters, now = new Da
     }
 
     return true;
+  }).sort((a, b) => {
+    if (filters.sort === "posted") {
+      return new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime();
+    }
+
+    if (filters.sort === "verified") {
+      return new Date(b.lastVerifiedAt).getTime() - new Date(a.lastVerifiedAt).getTime();
+    }
+
+    return Number(Boolean(b.isFeatured)) - Number(Boolean(a.isFeatured));
   });
 }
 

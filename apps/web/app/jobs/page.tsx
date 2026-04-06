@@ -24,6 +24,8 @@ export default async function JobsPage({
     location: typeof params.location === "string" ? params.location : undefined,
     roleFamily: typeof params.roleFamily === "string" ? params.roleFamily : undefined,
     search: typeof params.search === "string" ? params.search : undefined,
+    sort: typeof params.sort === "string" ? params.sort : undefined,
+    team: typeof params.team === "string" ? params.team : undefined,
     workMode: typeof params.workMode === "string" ? params.workMode : undefined,
   });
 
@@ -32,7 +34,7 @@ export default async function JobsPage({
       <SectionHeading
         eyebrow="Jobs"
         title="Curated Big Five roles with clean filters and official apply links."
-        description="Search by company, role family, level, and work mode. Stale roles automatically drop out once they fall outside the verification window."
+        description="Search by company, role family, level, location, team, and work mode. Stale roles automatically drop out once they fall outside the verification window."
       />
       <div className="mt-10">
         <JobFilters searchParams={params} />

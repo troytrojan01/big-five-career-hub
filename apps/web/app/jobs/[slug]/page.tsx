@@ -6,6 +6,7 @@ import { companies, curatedJobs, getAllGuides } from "@bigfive/content";
 import { ApplyButton } from "@/components/apply-button";
 import { Chip } from "@/components/chip";
 import { GuideCard } from "@/components/guide-card";
+import { getApplyLinkQuality, getJobDataQualityWarnings } from "@/lib/jobs";
 import { formatDate, absoluteUrl } from "@/lib/utils";
 
 export async function generateStaticParams() {
@@ -46,6 +47,8 @@ export default async function JobDetailPage({
   }
 
   const company = companies.find((entry) => entry.slug === job.sourceCompany);
+  const applyLinkQuality = getApplyLinkQuality(job);
+  const dataQualityWarnings = getJobDataQualityWarnings(job);
   const relatedGuides = getAllGuides().filter(
     (guide) => guide.company === job.sourceCompany || guide.roleFamily === job.roleFamily,
   ).slice(0, 3);
@@ -89,6 +92,9 @@ export default async function JobDetailPage({
             <Chip>{job.roleFamily}</Chip>
             <Chip>{job.level}</Chip>
             <Chip>{job.workMode}</Chip>
+            <Chip className={applyLinkQuality.kind === "exact" ? "bg-mint" : "bg-coral"}>
+              {applyLinkQuality.label}
+            </Chip>
           </div>
           <h1 className="mt-6 font-serif text-5xl text-ink">{job.title}</h1>
           <p className="mt-3 text-lg text-slate">{job.team}</p>
@@ -108,9 +114,19 @@ export default async function JobDetailPage({
             </div>
             <div>
               <dt className="text-sm uppercase tracking-[0.18em] text-slate">Apply path</dt>
-              <dd className="mt-2 text-base text-ink">Official employer careers page</dd>
+              <dd className="mt-2 text-base text-ink">{applyLinkQuality.label}</dd>
             </div>
           </dl>
+          {dataQualityWarnings.length ? (
+            <div className="mt-8 rounded-3xl border border-ink/10 bg-coral p-5 text-sm leading-7 text-ink">
+              <p className="font-semibold">Before applying</p>
+              <ul className="mt-2 space-y-2">
+                {dataQualityWarnings.map((warning) => (
+                  <li key={warning}>{warning}</li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
           <div className="mt-10">
             <ApplyButton href={job.officialApplyUrl} company={job.sourceCompany} title={job.title} />
           </div>

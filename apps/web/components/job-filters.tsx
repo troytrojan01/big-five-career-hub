@@ -8,14 +8,16 @@ export function JobFilters({
   searchParams: Record<string, string | string[] | undefined>;
 }) {
   const levels = uniqueValues(curatedJobs.map((job) => job.level));
+  const locations = uniqueValues(curatedJobs.map((job) => job.location));
+  const teams = uniqueValues(curatedJobs.map((job) => job.team));
 
   return (
-    <form className="grid gap-4 rounded-4xl border border-ink/10 bg-white p-6 shadow-float md:grid-cols-3 xl:grid-cols-6">
+    <form className="grid gap-4 rounded-4xl border border-ink/10 bg-white p-6 shadow-float md:grid-cols-3 xl:grid-cols-8">
       <input
         name="search"
         defaultValue={typeof searchParams.search === "string" ? searchParams.search : ""}
         placeholder="Search title, team, or keyword"
-        className="rounded-2xl border border-ink/10 bg-sand px-4 py-3 text-sm text-ink placeholder:text-slate md:col-span-3 xl:col-span-2"
+        className="rounded-2xl border border-ink/10 bg-sand px-4 py-3 text-sm text-ink placeholder:text-slate md:col-span-3 xl:col-span-3"
       />
       <select
         name="company"
@@ -62,6 +64,39 @@ export function JobFilters({
         <option value="remote">Remote</option>
         <option value="hybrid">Hybrid</option>
         <option value="onsite">Onsite</option>
+      </select>
+      <select
+        name="location"
+        defaultValue={typeof searchParams.location === "string" ? searchParams.location : ""}
+        className="rounded-2xl border border-ink/10 bg-sand px-4 py-3 text-sm text-ink"
+      >
+        <option value="">All locations</option>
+        {locations.map((location) => (
+          <option key={location} value={location}>
+            {location}
+          </option>
+        ))}
+      </select>
+      <select
+        name="team"
+        defaultValue={typeof searchParams.team === "string" ? searchParams.team : ""}
+        className="rounded-2xl border border-ink/10 bg-sand px-4 py-3 text-sm text-ink"
+      >
+        <option value="">All teams</option>
+        {teams.map((team) => (
+          <option key={team} value={team}>
+            {team}
+          </option>
+        ))}
+      </select>
+      <select
+        name="sort"
+        defaultValue={typeof searchParams.sort === "string" ? searchParams.sort : ""}
+        className="rounded-2xl border border-ink/10 bg-sand px-4 py-3 text-sm text-ink"
+      >
+        <option value="">Featured first</option>
+        <option value="posted">Newest posted</option>
+        <option value="verified">Recently verified</option>
       </select>
       <button className="rounded-2xl bg-ink px-4 py-3 text-sm font-medium text-sand transition hover:bg-ink/85">
         Apply filters
