@@ -1,17 +1,13 @@
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
-import { z } from "zod";
 
 import { getDb, waitlistSignups } from "@bigfive/db";
 
-const payloadSchema = z.object({
-  email: z.string().email(),
-  source: z.string().default("website"),
-});
+import { waitlistPayloadSchema } from "@/lib/waitlist";
 
 export async function POST(request: Request) {
   try {
-    const payload = payloadSchema.parse(await request.json());
+    const payload = waitlistPayloadSchema.parse(await request.json());
     const db = getDb();
     const existing = await db
       .select({ email: waitlistSignups.email })

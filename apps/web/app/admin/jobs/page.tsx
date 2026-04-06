@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 
 import { companies, curatedJobs } from "@bigfive/content";
 
@@ -6,6 +7,14 @@ import { Chip } from "@/components/chip";
 import { SectionHeading } from "@/components/section-heading";
 import { getApplyLinkQuality, getJobDataQualityWarnings, getJobFreshnessLabel, getJobStatus } from "@/lib/jobs";
 import { formatDate } from "@/lib/utils";
+
+export const metadata: Metadata = {
+  title: "Admin job operations",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default function AdminJobsPage() {
   const now = new Date();

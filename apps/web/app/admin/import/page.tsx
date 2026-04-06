@@ -1,7 +1,16 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 
 import { SectionHeading } from "@/components/section-heading";
 import { ImportJobsPanel } from "@/components/import-jobs-panel";
+
+export const metadata: Metadata = {
+  title: "Admin job import",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default function AdminImportPage() {
   return (
