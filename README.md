@@ -11,9 +11,10 @@ A US-first monorepo for a focused Big Tech jobs and interview prep product cover
 ## Quick Start
 
 1. Copy `.env.example` to `.env`.
-2. Install dependencies with `npm install`.
-3. Start the app with `npm run dev`.
-4. Open `http://localhost:3000`.
+2. Set `ADMIN_USERNAME` and `ADMIN_PASSWORD` before deploying admin routes.
+3. Install dependencies with `npm install`.
+4. Start the app with `npm run dev`.
+5. Open `http://localhost:3000`.
 
 ## Useful Scripts
 
@@ -34,3 +35,4 @@ A US-first monorepo for a focused Big Tech jobs and interview prep product cover
 - If the database is not configured, the import flow still provides validation previews.
 - Seed data pulls the launch companies and curated jobs from `@bigfive/content`.
 - Admin job operations are available at `/admin/jobs`; CSV/JSON import validation is available at `/admin/import`.
+- Admin routes use HTTP Basic Auth when `ADMIN_USERNAME` and `ADMIN_PASSWORD` are set. In production, missing admin credentials block admin access.
