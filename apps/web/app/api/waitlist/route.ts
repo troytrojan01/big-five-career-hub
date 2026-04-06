@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
+import { ZodError } from "zod";
 
 import { getDb, waitlistSignups } from "@bigfive/db";
 
@@ -30,6 +31,15 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json({ message: "Please enter a valid email address." }, { status: 400 });
+    if (error instanceof ZodError) {
+      return NextResponse.json({ message: "Please enter a valid email address." }, { status: 400 });
+    }
+
+    console.error("Waitlist signup failed.", error);
+
+    return NextResponse.json(
+      { message: "Waitlist storage is temporarily unavailable. Please try again soon." },
+      { status: 503 },
+    );
   }
 }

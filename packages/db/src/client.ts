@@ -15,6 +15,8 @@ export function getDb() {
     sqlClient = postgres(url, {
       prepare: false,
       max: 1,
+      connect_timeout: 8,
+      idle_timeout: 20,
     });
 
     dbInstance = drizzle(sqlClient);
