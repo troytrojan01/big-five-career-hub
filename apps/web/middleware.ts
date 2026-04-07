@@ -30,6 +30,18 @@ function getBasicAuthCredentials(request: NextRequest) {
 }
 
 export function middleware(request: NextRequest) {
+  if (request.nextUrl.hostname === "www.bigtechjob.com") {
+    const url = request.nextUrl.clone();
+    url.hostname = "bigtechjob.com";
+
+    return NextResponse.redirect(url, 308);
+  }
+
+  const isAdminRoute = request.nextUrl.pathname.startsWith("/admin") || request.nextUrl.pathname.startsWith("/api/admin");
+  if (!isAdminRoute) {
+    return NextResponse.next();
+  }
+
   const adminUsername = process.env.ADMIN_USERNAME;
   const adminPassword = process.env.ADMIN_PASSWORD;
   const isProduction = process.env.NODE_ENV === "production";
@@ -52,5 +64,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/admin/:path*"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };

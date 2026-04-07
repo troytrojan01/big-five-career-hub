@@ -15,6 +15,10 @@ function requestWithAuth(username?: string, password?: string) {
   });
 }
 
+function requestForUrl(url: string) {
+  return new NextRequest(url);
+}
+
 describe("admin middleware", () => {
   it("allows requests with configured credentials", () => {
     vi.stubEnv("ADMIN_USERNAME", "admin");
@@ -32,5 +36,21 @@ describe("admin middleware", () => {
     const response = middleware(requestWithAuth());
 
     expect(response.status).toBe(401);
+  });
+
+  it("redirects www traffic to the apex domain", () => {
+    const response = middleware(requestForUrl("https://www.bigtechjob.com/jobs?company=amazon"));
+
+    expect(response.status).toBe(308);
+    expect(response.headers.get("location")).toBe("https://bigtechjob.com/jobs?company=amazon");
+  });
+
+  it("does not require admin auth on public pages", () => {
+    vi.stubEnv("ADMIN_USERNAME", "admin");
+    vi.stubEnv("ADMIN_PASSWORD", "secret");
+
+    const response = middleware(requestForUrl("https://bigtechjob.com/jobs"));
+
+    expect(response.status).toBe(200);
   });
 });
