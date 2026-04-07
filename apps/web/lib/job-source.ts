@@ -119,7 +119,7 @@ async function getJobsFromSupabaseRest() {
 
   const response = await fetch(endpoint, {
     headers: getSupabaseRestHeaders(config.serviceRoleKey),
-    next: { revalidate: 300 },
+    cache: "no-store",
   });
 
   if (!response.ok) {
@@ -147,7 +147,7 @@ async function getJobBySlugFromSupabaseRest(slug: string) {
 
   const response = await fetch(endpoint, {
     headers: getSupabaseRestHeaders(config.serviceRoleKey),
-    next: { revalidate: 300 },
+    cache: "no-store",
   });
 
   if (!response.ok) {
