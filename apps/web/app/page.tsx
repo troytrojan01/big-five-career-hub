@@ -73,7 +73,7 @@ export default async function HomePage() {
       <section className="mx-auto max-w-7xl px-6 py-12">
         <SectionHeading
           eyebrow="Companies"
-          title="One hub for every company that matters to this first wedge."
+          title="Company hubs for Amazon, Apple, Google, Meta, and Microsoft."
           description="Jump from live roles to values, interview prep, and official hiring resources without leaving the product."
         />
         <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-5">
