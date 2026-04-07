@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
   transpilePackages: ["@bigfive/content", "@bigfive/db"],
   outputFileTracingRoot: workspaceRoot,
   outputFileTracingIncludes: {
-    "/**/*": ["packages/content/content/**/*.mdx"],
+    "/**/*": ["../../packages/content/content/**/*.mdx"],
   },
   async headers() {
     return [
