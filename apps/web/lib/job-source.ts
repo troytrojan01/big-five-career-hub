@@ -13,8 +13,12 @@ function isProductionBuild() {
   return process.env.NEXT_PHASE === "phase-production-build";
 }
 
+function areDatabaseReadsDisabled() {
+  return process.env.DISABLE_DATABASE_READS === "true";
+}
+
 function shouldUseDatabase() {
-  return hasDatabaseUrl() && !isProductionBuild();
+  return hasDatabaseUrl() && !isProductionBuild() && !areDatabaseReadsDisabled();
 }
 
 function toJobListing(job: DbJobListing): JobListing {
