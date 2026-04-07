@@ -22,6 +22,13 @@
       "when": 1775518859000,
       "tag": "0002_allow_anon_waitlist_insert",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1775521700000,
+      "tag": "0003_tighten_anon_waitlist_insert",
+      "breakpoints": true
     }
   ]
 }
