@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server";
-import { sql } from "drizzle-orm";
-
-import { getDb, jobListings } from "@bigfive/db";
 
 import type { ImportPreview } from "@/lib/import-jobs";
 import { parseImportText } from "@/lib/import-jobs";
+import { saveImportedJobs } from "@/lib/job-import-storage";
 
 export async function POST(request: Request) {
   let preview: ImportPreview = {
@@ -42,7 +40,6 @@ export async function POST(request: Request) {
       });
     }
 
-    const db = getDb();
     if (!preview.jobs.length) {
       return NextResponse.json({
         ...preview,
@@ -50,39 +47,12 @@ export async function POST(request: Request) {
       });
     }
 
-    await db
-      .insert(jobListings)
-      .values(
-        preview.jobs.map((job) => ({
-          ...job,
-          postedAt: new Date(job.postedAt),
-          lastVerifiedAt: new Date(job.lastVerifiedAt),
-        })),
-      )
-      .onConflictDoUpdate({
-        target: [jobListings.sourceCompany, jobListings.externalJobId],
-        set: {
-          slug: sql`excluded.slug`,
-          title: sql`excluded.title`,
-          roleFamily: sql`excluded.role_family`,
-          level: sql`excluded.level`,
-          location: sql`excluded.location`,
-          workMode: sql`excluded.work_mode`,
-          team: sql`excluded.team`,
-          shortSummary: sql`excluded.short_summary`,
-          officialApplyUrl: sql`excluded.official_apply_url`,
-          postedAt: sql`excluded.posted_at`,
-          lastVerifiedAt: sql`excluded.last_verified_at`,
-          status: sql`excluded.status`,
-          isFeatured: sql`excluded.is_featured`,
-          updatedAt: new Date(),
-        },
-      });
+    const storage = await saveImportedJobs(preview.jobs);
 
     return NextResponse.json({
       ...preview,
       inserted: preview.jobs.length,
-      message: `Imported or updated ${preview.jobs.length} roles in PostgreSQL.`,
+      message: `Imported or updated ${preview.jobs.length} roles via ${storage}.`,
     });
   } catch (error) {
     if (error instanceof Error && error.message.includes("DATABASE_URL")) {
