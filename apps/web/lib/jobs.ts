@@ -8,22 +8,25 @@ export interface JobFilters {
   workMode?: string;
   team?: string;
   search?: string;
+  postedWithin?: string;
   sort?: string;
 }
 
-const FRESHNESS_WINDOW_MS = 1000 * 60 * 60 * 48;
 const HOUR_MS = 1000 * 60 * 60;
+const DAY_MS = HOUR_MS * 24;
+const POSTED_WITHIN_DAYS = new Set(["1", "3", "7", "14", "30"]);
 
-export function isJobFresh(lastVerifiedAt: string, now = new Date()) {
-  return now.getTime() - new Date(lastVerifiedAt).getTime() <= FRESHNESS_WINDOW_MS;
-}
-
-export function getJobStatus(job: JobListing, now = new Date()) {
-  if (job.status !== "active") {
-    return "inactive";
+export function isJobPostedWithin(postedAt: string, days: string | undefined, now = new Date()) {
+  if (!days || !POSTED_WITHIN_DAYS.has(days)) {
+    return true;
   }
 
-  return isJobFresh(job.lastVerifiedAt, now) ? "active" : "inactive";
+  const ageMs = now.getTime() - new Date(postedAt).getTime();
+  return ageMs <= Number(days) * DAY_MS;
+}
+
+export function getJobStatus(job: JobListing) {
+  return job.status;
 }
 
 export function getHoursSinceVerification(lastVerifiedAt: string, now = new Date()) {
@@ -33,15 +36,7 @@ export function getHoursSinceVerification(lastVerifiedAt: string, now = new Date
 export function getJobFreshnessLabel(job: JobListing, now = new Date()) {
   const hours = getHoursSinceVerification(job.lastVerifiedAt, now);
 
-  if (getJobStatus(job, now) === "inactive") {
-    return `Needs recheck (${hours}h old)`;
-  }
-
-  if (hours >= 36) {
-    return `Recheck soon (${hours}h old)`;
-  }
-
-  return `Fresh (${hours}h old)`;
+  return `Verified ${hours}h ago`;
 }
 
 export function getApplyLinkQuality(job: JobListing) {
@@ -81,13 +76,12 @@ export function getApplyLinkQuality(job: JobListing) {
   };
 }
 
-export function getJobDataQualityWarnings(job: JobListing, now = new Date()) {
+export function getJobDataQualityWarnings(job: JobListing) {
   const warnings: string[] = [];
-  const freshnessStatus = getJobStatus(job, now);
   const applyLinkQuality = getApplyLinkQuality(job);
 
-  if (freshnessStatus === "inactive") {
-    warnings.push("This role is outside the 48-hour verification window.");
+  if (getJobStatus(job) === "inactive") {
+    warnings.push("This role is currently marked inactive.");
   }
 
   if (applyLinkQuality.kind !== "exact") {
@@ -101,7 +95,11 @@ export function filterJobs(jobs: JobListing[], filters: JobFilters, now = new Da
   const normalizedSearch = filters.search?.trim().toLowerCase();
 
   return jobs.filter((job) => {
-    if (getJobStatus(job, now) !== "active") {
+    if (getJobStatus(job) !== "active") {
+      return false;
+    }
+
+    if (!isJobPostedWithin(job.postedAt, filters.postedWithin, now)) {
       return false;
     }
 
@@ -146,15 +144,15 @@ export function filterJobs(jobs: JobListing[], filters: JobFilters, now = new Da
 
     return true;
   }).sort((a, b) => {
-    if (filters.sort === "posted") {
-      return new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime();
-    }
-
     if (filters.sort === "verified") {
       return new Date(b.lastVerifiedAt).getTime() - new Date(a.lastVerifiedAt).getTime();
     }
 
-    return Number(Boolean(b.isFeatured)) - Number(Boolean(a.isFeatured));
+    if (filters.sort === "featured") {
+      return Number(Boolean(b.isFeatured)) - Number(Boolean(a.isFeatured));
+    }
+
+    return new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime();
   });
 }
 

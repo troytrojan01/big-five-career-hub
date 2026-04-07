@@ -14,7 +14,7 @@ export function JobFilters({
   const teams = uniqueValues(jobs.map((job) => job.team));
 
   return (
-    <form className="grid gap-4 rounded-4xl border border-ink/10 bg-white p-6 shadow-float md:grid-cols-3 xl:grid-cols-8">
+    <form className="grid gap-4 rounded-4xl border border-ink/10 bg-white p-6 shadow-float md:grid-cols-3 xl:grid-cols-9">
       <input
         name="search"
         defaultValue={typeof searchParams.search === "string" ? searchParams.search : ""}
@@ -92,13 +92,25 @@ export function JobFilters({
         ))}
       </select>
       <select
+        name="postedWithin"
+        defaultValue={typeof searchParams.postedWithin === "string" ? searchParams.postedWithin : ""}
+        className="rounded-2xl border border-ink/10 bg-sand px-4 py-3 text-sm text-ink"
+      >
+        <option value="">Any posted date</option>
+        <option value="1">Posted in 24 hours</option>
+        <option value="3">Posted in 3 days</option>
+        <option value="7">Posted in 7 days</option>
+        <option value="14">Posted in 14 days</option>
+        <option value="30">Posted in 30 days</option>
+      </select>
+      <select
         name="sort"
         defaultValue={typeof searchParams.sort === "string" ? searchParams.sort : ""}
         className="rounded-2xl border border-ink/10 bg-sand px-4 py-3 text-sm text-ink"
       >
-        <option value="">Featured first</option>
-        <option value="posted">Newest posted</option>
+        <option value="">Newest posted</option>
         <option value="verified">Recently verified</option>
+        <option value="featured">Featured first</option>
       </select>
       <button className="rounded-2xl bg-ink px-4 py-3 text-sm font-medium text-sand transition hover:bg-ink/85">
         Apply filters

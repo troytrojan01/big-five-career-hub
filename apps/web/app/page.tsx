@@ -62,7 +62,7 @@ export default async function HomePage() {
             <p className="text-sm uppercase tracking-[0.24em] text-sand/70">Launch focus</p>
             <ul className="mt-5 space-y-4 text-base leading-7 text-sand/90">
               <li>Official apply links only</li>
-              <li>US-first search filters and freshness rules</li>
+              <li>US-first search filters and posted-date controls</li>
               <li>Interview prep across five core role families</li>
               <li>Built for later mobile alerts and saved jobs</li>
             </ul>

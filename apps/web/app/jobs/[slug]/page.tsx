@@ -61,7 +61,6 @@ export default async function JobDetailPage({
     title: job.title,
     description: job.shortSummary,
     datePosted: job.postedAt,
-    validThrough: job.lastVerifiedAt,
     employmentType: "FULL_TIME",
     hiringOrganization: {
       "@type": "Organization",

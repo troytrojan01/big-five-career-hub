@@ -20,8 +20,8 @@ export const metadata: Metadata = {
 export default async function AdminJobsPage() {
   const now = new Date();
   const jobs = await getJobs();
-  const activeJobs = jobs.filter((job) => getJobStatus(job, now) === "active");
-  const staleJobs = jobs.filter((job) => getJobStatus(job, now) === "inactive");
+  const activeJobs = jobs.filter((job) => getJobStatus(job) === "active");
+  const inactiveJobs = jobs.filter((job) => getJobStatus(job) === "inactive");
   const featuredJobs = jobs.filter((job) => job.isFeatured);
   const jobsNeedingLinkReview = jobs.filter((job) => getApplyLinkQuality(job).kind !== "exact");
 
@@ -30,7 +30,7 @@ export default async function AdminJobsPage() {
       <SectionHeading
         eyebrow="Admin"
         title="Curated job operations dashboard."
-        description="Use this no-database dashboard to inspect launch seed jobs, spot stale listings, and jump into the import workflow before we wire Postgres as the source of truth."
+        description="Use this no-database dashboard to inspect launch seed jobs, review verification timestamps, and jump into the import workflow before we wire Postgres as the source of truth."
       />
 
       <div className="mt-10 grid gap-4 md:grid-cols-4">
@@ -43,8 +43,8 @@ export default async function AdminJobsPage() {
           <p className="mt-3 text-3xl font-semibold text-ink">{activeJobs.length}</p>
         </div>
         <div className="rounded-4xl border border-ink/10 bg-white p-6 shadow-float">
-          <p className="text-sm uppercase tracking-[0.18em] text-slate">Needs recheck</p>
-          <p className="mt-3 text-3xl font-semibold text-ink">{staleJobs.length}</p>
+          <p className="text-sm uppercase tracking-[0.18em] text-slate">Inactive</p>
+          <p className="mt-3 text-3xl font-semibold text-ink">{inactiveJobs.length}</p>
         </div>
         <div className="rounded-4xl border border-ink/10 bg-white p-6 shadow-float">
           <p className="text-sm uppercase tracking-[0.18em] text-slate">Featured</p>
@@ -71,7 +71,7 @@ export default async function AdminJobsPage() {
       <section className="mt-12 overflow-hidden rounded-4xl border border-ink/10 bg-white shadow-float">
         <div className="border-b border-ink/10 p-6">
           <h2 className="text-2xl font-semibold text-ink">Launch job inventory</h2>
-          <p className="mt-2 text-sm text-slate">Freshness is calculated from `lastVerifiedAt` with a 48-hour active window.</p>
+          <p className="mt-2 text-sm text-slate">Verification timestamps are shown for review, but they no longer auto-hide active roles.</p>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[960px] border-collapse text-left text-sm">
@@ -89,9 +89,9 @@ export default async function AdminJobsPage() {
             <tbody>
               {jobs.map((job) => {
                 const company = companies.find((entry) => entry.slug === job.sourceCompany);
-                const status = getJobStatus(job, now);
+                const status = getJobStatus(job);
                 const applyLinkQuality = getApplyLinkQuality(job);
-                const dataQualityWarnings = getJobDataQualityWarnings(job, now);
+                const dataQualityWarnings = getJobDataQualityWarnings(job);
 
                 return (
                   <tr key={job.slug} className="border-t border-ink/10 align-top">

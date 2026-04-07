@@ -47,7 +47,7 @@ export function ImportJobsPanel() {
       <form onSubmit={handleSubmit} className="rounded-4xl border border-ink/10 bg-white p-6 shadow-float">
         <h2 className="text-2xl font-semibold text-ink">Import curated roles</h2>
         <p className="mt-3 text-slate">
-          Upload CSV or JSON for validation. The API requires `officialApplyUrl` and `lastVerifiedAt`, and it automatically flags stale roles inactive after 48 hours.
+          Upload CSV or JSON for validation. The API requires `officialApplyUrl` and `lastVerifiedAt`, but older verification timestamps no longer auto-hide roles.
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
           <button
@@ -109,7 +109,7 @@ export function ImportJobsPanel() {
             <p>Total rows: {preview.total}</p>
             <p>Valid rows: {preview.valid}</p>
             <p>Invalid rows: {preview.invalid}</p>
-            <p>Stale rows: {preview.stale}</p>
+            <p>Inactive rows: {preview.inactive}</p>
             <p>Duplicate rows: {preview.duplicates}</p>
             <p>Inserted rows: {preview.inserted}</p>
             {preview.warnings.length ? (

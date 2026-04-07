@@ -4,8 +4,6 @@ import { z } from "zod";
 
 import type { JobListing } from "@bigfive/content";
 
-import { getJobStatus } from "./jobs";
-
 const officialCompanyHosts: Record<string, string[]> = {
   amazon: ["amazon.jobs", "www.amazon.jobs"],
   apple: ["jobs.apple.com", "www.apple.com"],
@@ -51,7 +49,7 @@ export interface ImportPreview {
   jobs: JobListing[];
   errors: string[];
   warnings: string[];
-  stale: number;
+  inactive: number;
   duplicates: number;
 }
 
@@ -63,13 +61,6 @@ function withSlug(input: z.infer<typeof importJobSchema>): JobListing {
       strict: true,
       trim: true,
     }),
-    status: getJobStatus(
-      {
-        ...input,
-        slug: "",
-      } as JobListing,
-      new Date(),
-    ),
   };
 }
 
@@ -131,10 +122,6 @@ export function parseImportText(text: string, format: "csv" | "json"): ImportPre
       warnings.push(`Row ${index + 1}: ${domainWarning}`);
     }
 
-    if (job.status === "inactive") {
-      warnings.push(`Row ${index + 1}: role will import as inactive because lastVerifiedAt is older than 48 hours.`);
-    }
-
     seenJobIds.add(jobIdKey);
     seenSlugs.add(job.slug);
     jobs.push(job);
@@ -148,7 +135,7 @@ export function parseImportText(text: string, format: "csv" | "json"): ImportPre
     jobs,
     errors,
     warnings,
-    stale: jobs.filter((job) => job.status === "inactive").length,
+    inactive: jobs.filter((job) => job.status === "inactive").length,
     duplicates,
   };
 }

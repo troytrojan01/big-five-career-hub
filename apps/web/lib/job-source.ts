@@ -52,7 +52,7 @@ export async function getJobs() {
 
   try {
     const db = getDb();
-    const rows = await db.select().from(jobListings).orderBy(desc(jobListings.isFeatured), desc(jobListings.lastVerifiedAt));
+    const rows = await db.select().from(jobListings).orderBy(desc(jobListings.postedAt));
 
     return rows.length ? rows.map(toJobListing) : curatedJobs;
   } catch (error) {

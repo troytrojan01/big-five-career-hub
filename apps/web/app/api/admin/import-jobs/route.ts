@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     jobs: [],
     errors: [],
     warnings: [],
-    stale: 0,
+    inactive: 0,
     duplicates: 0,
   };
 
@@ -74,7 +74,7 @@ export async function POST(request: Request) {
         jobs: [],
         errors: [error instanceof Error ? error.message : "Unknown import error"],
         warnings: [],
-        stale: 0,
+        inactive: 0,
         duplicates: 0,
         message: "Import failed.",
       },

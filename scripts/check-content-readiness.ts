@@ -2,13 +2,12 @@ import { curatedJobs, getAllCompanyHubs, getAllGuides } from "@bigfive/content";
 
 import { getApplyLinkQuality, getJobStatus } from "../apps/web/lib/jobs";
 
-const now = new Date();
 const failures: string[] = [];
 const warnings: string[] = [];
 
 for (const job of curatedJobs) {
-  if (getJobStatus(job, now) !== "active") {
-    failures.push(`${job.slug}: role is outside the 48-hour verification window.`);
+  if (getJobStatus(job) !== "active") {
+    failures.push(`${job.slug}: role is marked inactive.`);
   }
 
   const applyLinkQuality = getApplyLinkQuality(job);

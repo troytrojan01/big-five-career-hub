@@ -22,6 +22,7 @@ export default async function JobsPage({
     company: typeof params.company === "string" ? params.company : undefined,
     level: typeof params.level === "string" ? params.level : undefined,
     location: typeof params.location === "string" ? params.location : undefined,
+    postedWithin: typeof params.postedWithin === "string" ? params.postedWithin : undefined,
     roleFamily: typeof params.roleFamily === "string" ? params.roleFamily : undefined,
     search: typeof params.search === "string" ? params.search : undefined,
     sort: typeof params.sort === "string" ? params.sort : undefined,
@@ -34,14 +35,14 @@ export default async function JobsPage({
       <SectionHeading
         eyebrow="Jobs"
         title="Curated Big Five roles with clean filters and official apply links."
-        description="Search by company, role family, level, location, team, and work mode. Stale roles automatically drop out once they fall outside the verification window."
+        description="Search by company, role family, level, location, team, work mode, and posted-date freshness. Results default to newest listings first."
       />
       <div className="mt-10">
         <JobFilters jobs={allJobs} searchParams={params} />
       </div>
       <div className="mt-10 flex items-center justify-between text-sm text-slate">
         <p>{jobs.length} active roles</p>
-        <p>Freshness window: 48 hours</p>
+        <p>Sorted by newest posted</p>
       </div>
       <div className="mt-8 grid gap-6 xl:grid-cols-2">
         {jobs.map((job) => (
