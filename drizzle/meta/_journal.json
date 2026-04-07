@@ -15,6 +15,13 @@
       "when": 1775514822035,
       "tag": "0001_enable_rls_policies",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1775518859000,
+      "tag": "0002_allow_anon_waitlist_insert",
+      "breakpoints": true
     }
   ]
 }

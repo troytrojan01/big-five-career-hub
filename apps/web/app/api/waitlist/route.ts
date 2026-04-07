@@ -1,26 +1,17 @@
 import { NextResponse } from "next/server";
-import { eq } from "drizzle-orm";
 import { ZodError } from "zod";
 
-import { getDb, waitlistSignups } from "@bigfive/db";
-
 import { waitlistPayloadSchema } from "@/lib/waitlist";
+import { saveWaitlistSignup } from "@/lib/waitlist-storage";
 
 export async function POST(request: Request) {
   try {
     const payload = waitlistPayloadSchema.parse(await request.json());
-    const db = getDb();
-    const existing = await db
-      .select({ email: waitlistSignups.email })
-      .from(waitlistSignups)
-      .where(eq(waitlistSignups.email, payload.email))
-      .limit(1);
+    const result = await saveWaitlistSignup(payload);
 
-    if (existing.length) {
+    if (result === "existing") {
       return NextResponse.json({ message: "You're already on the list." });
     }
-
-    await db.insert(waitlistSignups).values(payload);
 
     return NextResponse.json({ message: "Thanks. You're on the launch list." });
   } catch (error) {
