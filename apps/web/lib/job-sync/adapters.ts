@@ -332,7 +332,7 @@ async function fetchMicrosoftJobs() {
             ),
             shortSummary: `${position.name} in ${position.department ?? "a Microsoft team"} at Microsoft.`,
             officialApplyUrl: `${MICROSOFT_BASE_URL}${position.positionUrl}?domain=microsoft.com`,
-            postedAt: position.postedTs * 1000,
+            postedAt: new Date(position.postedTs * 1000).toISOString(),
             roleFamilyHint: position.department,
           }),
         )
