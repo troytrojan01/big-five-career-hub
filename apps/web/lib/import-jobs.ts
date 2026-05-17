@@ -9,8 +9,9 @@ const officialCompanyHosts: Record<string, string[]> = {
   apple: ["jobs.apple.com", "www.apple.com"],
   google: ["careers.google.com", "google.com", "www.google.com"],
   meta: ["metacareers.com", "www.metacareers.com"],
-  microsoft: ["careers.microsoft.com"],
+  microsoft: ["apply.careers.microsoft.com", "careers.microsoft.com"],
 };
+const SLUG_MAX_LENGTH = 180;
 
 const csvBoolean = z.preprocess((value) => {
   if (typeof value === "boolean") {
@@ -54,13 +55,21 @@ export interface ImportPreview {
 }
 
 function withSlug(input: z.infer<typeof importJobSchema>): JobListing {
+  const suffix = slugify(input.externalJobId, {
+    lower: true,
+    strict: true,
+    trim: true,
+  }).slice(-48);
+  const prefix = slugify(`${input.sourceCompany}-${input.title}-${input.team}`, {
+    lower: true,
+    strict: true,
+    trim: true,
+  });
+  const prefixMaxLength = Math.max(1, SLUG_MAX_LENGTH - suffix.length - 1);
+
   return {
     ...input,
-    slug: slugify(`${input.sourceCompany}-${input.title}-${input.team}-${input.externalJobId}`, {
-      lower: true,
-      strict: true,
-      trim: true,
-    }),
+    slug: `${prefix.slice(0, prefixMaxLength).replace(/-+$/g, "")}-${suffix}`,
   };
 }
 

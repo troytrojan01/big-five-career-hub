@@ -14,6 +14,8 @@ async function main() {
   const sqlClient = postgres(url, {
     prepare: false,
     max: 1,
+    connect_timeout: 8,
+    idle_timeout: 20,
   });
   const db = drizzle(sqlClient);
 

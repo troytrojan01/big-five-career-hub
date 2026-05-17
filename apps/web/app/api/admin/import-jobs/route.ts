@@ -67,15 +67,10 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       {
-        total: 0,
-        valid: 0,
-        invalid: 1,
+        ...preview,
+        invalid: preview.invalid + 1,
         inserted: 0,
-        jobs: [],
         errors: [error instanceof Error ? error.message : "Unknown import error"],
-        warnings: [],
-        inactive: 0,
-        duplicates: 0,
         message: "Import failed.",
       },
       { status: 400 },

@@ -1,6 +1,7 @@
 import {
   boolean,
   index,
+  integer,
   pgEnum,
   pgTable,
   text,
@@ -74,5 +75,26 @@ export const waitlistSignups = pgTable(
   },
   (table) => ({
     emailIdx: uniqueIndex("waitlist_signups_email_idx").on(table.email),
+  }),
+);
+
+export const jobSyncRuns = pgTable(
+  "job_sync_runs",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    sourceCompany: companySlugEnum("source_company").notNull(),
+    status: varchar("status", { length: 20 }).notNull(),
+    fetchedCount: integer("fetched_count").notNull().default(0),
+    insertedCount: integer("inserted_count").notNull().default(0),
+    updatedCount: integer("updated_count").notNull().default(0),
+    inactivatedCount: integer("inactivated_count").notNull().default(0),
+    errorMessage: text("error_message"),
+    startedAt: timestamp("started_at", { withTimezone: true }).defaultNow().notNull(),
+    finishedAt: timestamp("finished_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    sourceCompanyIdx: index("job_sync_runs_source_company_idx").on(table.sourceCompany),
+    startedAtIdx: index("job_sync_runs_started_at_idx").on(table.startedAt),
   }),
 );
