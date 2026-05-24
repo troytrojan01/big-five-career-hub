@@ -1,6 +1,6 @@
 # Big Five Career Hub
 
-A US-first monorepo for a focused Big Tech jobs and interview prep product covering Amazon, Apple, Google, Meta, and Microsoft.
+A monorepo for a focused Big Tech jobs and interview prep hub covering Amazon, Apple, Google, Meta, and Microsoft. Search curated official roles, explore company-specific hiring guides, and prep for the five core role families — all in one place.
 
 ## Stack
 

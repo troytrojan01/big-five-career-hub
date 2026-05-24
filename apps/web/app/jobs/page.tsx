@@ -8,7 +8,7 @@ import { filterJobs } from "@/lib/jobs";
 
 export const metadata: Metadata = {
   title: "Jobs",
-  description: "Curated US-first Big Tech roles from Amazon, Apple, Google, Meta, and Microsoft.",
+  description: "Curated Big Tech roles from Amazon, Apple, Google, Meta, and Microsoft.",
 };
 
 export default async function JobsPage({

@@ -7,7 +7,6 @@ import { CompanyCard } from "@/components/company-card";
 import { GuideCard } from "@/components/guide-card";
 import { JobCard } from "@/components/job-card";
 import { SectionHeading } from "@/components/section-heading";
-import { WaitlistForm } from "@/components/waitlist-form";
 import { getJobs } from "@/lib/job-source";
 
 export default async function HomePage() {
@@ -57,12 +56,11 @@ export default async function HomePage() {
           </div>
         </div>
         <div className="space-y-6">
-          <WaitlistForm />
           <div className="rounded-4xl border border-ink/10 bg-ink p-8 text-sand shadow-float">
             <p className="text-sm uppercase tracking-[0.24em] text-sand/70">Launch focus</p>
             <ul className="mt-5 space-y-4 text-base leading-7 text-sand/90">
               <li>Official apply links only</li>
-              <li>US-first search filters and posted-date controls</li>
+              <li>Search filters and posted-date controls</li>
               <li>Interview prep across five core role families</li>
               <li>Built for later mobile alerts and saved jobs</li>
             </ul>
