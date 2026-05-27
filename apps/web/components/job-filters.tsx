@@ -110,7 +110,6 @@ export function JobFilters({
       >
         <option value="">Newest posted</option>
         <option value="verified">Recently verified</option>
-        <option value="featured">Featured first</option>
       </select>
       <button className="rounded-2xl bg-ink px-4 py-3 text-sm font-medium text-sand transition hover:bg-ink/85">
         Apply filters

@@ -2,7 +2,13 @@ import { describe, expect, it } from "vitest";
 
 import { curatedJobs } from "@bigfive/content";
 
-import { filterJobs, getApplyLinkQuality, getJobStatus, isJobPostedWithin } from "./jobs";
+import {
+  filterJobs,
+  getActiveJobs,
+  getApplyLinkQuality,
+  getJobStatus,
+  isJobPostedWithin,
+} from "./jobs";
 
 describe("job freshness", () => {
   it("lets candidates filter by posted-date freshness", () => {
@@ -80,6 +86,24 @@ describe("job filters", () => {
 
     expect(new Date(results[0]!.postedAt).getTime()).toBeGreaterThanOrEqual(new Date(results[1]!.postedAt).getTime());
   });
+
+  it("returns active jobs newest first for latest role surfaces", () => {
+    const [olderActive, inactive, newerActive] = curatedJobs.slice(0, 3).map((job, index) => ({
+      ...job,
+      postedAt: ["2026-04-01T00:00:00.000Z", "2026-04-03T00:00:00.000Z", "2026-04-05T00:00:00.000Z"][
+        index
+      ]!,
+      status: index === 1 ? "inactive" as const : "active" as const,
+    }));
+
+    const results = getActiveJobs([olderActive!, inactive!, newerActive!]);
+
+    expect(results.map((job) => job.status)).toEqual(["active", "active"]);
+    expect(results.map((job) => job.postedAt)).toEqual([
+      "2026-04-05T00:00:00.000Z",
+      "2026-04-01T00:00:00.000Z",
+    ]);
+  });
 });
 
 describe("apply link quality", () => {
@@ -92,6 +116,17 @@ describe("apply link quality", () => {
       getApplyLinkQuality({
         ...curatedJobs[0]!,
         officialApplyUrl: `https://www.amazon.jobs/jobs/${curatedJobs[0]!.externalJobId}`,
+      }).kind,
+    ).toBe("exact");
+  });
+
+  it("labels official detail links as exact when the URL contains the source id without its company prefix", () => {
+    expect(
+      getApplyLinkQuality({
+        ...curatedJobs[0]!,
+        externalJobId: "APL-200656154-0157",
+        officialApplyUrl:
+          "https://jobs.apple.com/en-us/details/200656154-0157/data-center-mlb-reliability-engineer?team=HRDWR",
       }).kind,
     ).toBe("exact");
   });

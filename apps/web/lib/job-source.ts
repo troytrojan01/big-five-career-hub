@@ -3,7 +3,13 @@ import { desc, eq } from "drizzle-orm";
 import { curatedJobs, type JobListing } from "@bigfive/content";
 import { getDb, jobListings } from "@bigfive/db";
 
+import { parseImportText } from "@/lib/import-jobs";
+
+import officialCareerPageJobs from "../../../data/job-imports/2026-04-07-official-career-pages.json";
+
 type DbJobListing = typeof jobListings.$inferSelect;
+const staticOfficialJobs = parseImportText(JSON.stringify(officialCareerPageJobs), "json").jobs;
+
 type SupabaseJobRow = {
   source_company: JobListing["sourceCompany"];
   external_job_id: string;
@@ -101,6 +107,10 @@ function getSupabaseRestHeaders(serviceRoleKey: string) {
     apikey: serviceRoleKey,
     Authorization: `Bearer ${serviceRoleKey}`,
   };
+}
+
+function sortByNewestPosted(jobs: JobListing[]) {
+  return [...jobs].sort((a, b) => new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime());
 }
 
 async function getJobsFromSupabaseRest() {
@@ -202,7 +212,7 @@ export async function getJobs() {
     }
   }
 
-  return curatedJobs;
+  return staticOfficialJobs.length ? sortByNewestPosted(staticOfficialJobs) : curatedJobs;
 }
 
 export async function getJobBySlug(slug: string) {
@@ -222,5 +232,5 @@ export async function getJobBySlug(slug: string) {
     }
   }
 
-  return curatedJobs.find((job) => job.slug === slug);
+  return staticOfficialJobs.find((job) => job.slug === slug) ?? curatedJobs.find((job) => job.slug === slug);
 }

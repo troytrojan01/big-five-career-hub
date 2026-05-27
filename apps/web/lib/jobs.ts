@@ -43,6 +43,7 @@ export function getApplyLinkQuality(job: JobListing) {
   const url = new URL(job.officialApplyUrl);
   const path = url.pathname.replace(/\/$/, "");
   const externalId = job.externalJobId.toLowerCase();
+  const externalIdWithoutPrefix = externalId.replace(/^[a-z]+-/, "");
   const normalizedUrl = job.officialApplyUrl.toLowerCase();
   const genericPaths = new Set([
     "",
@@ -53,7 +54,7 @@ export function getApplyLinkQuality(job: JobListing) {
     "/about/careers/applications/jobs/results",
   ]);
 
-  if (normalizedUrl.includes(externalId)) {
+  if (normalizedUrl.includes(externalId) || normalizedUrl.includes(externalIdWithoutPrefix)) {
     return {
       kind: "exact" as const,
       label: "Exact official job link",
@@ -74,6 +75,16 @@ export function getApplyLinkQuality(job: JobListing) {
     label: "Official link to review",
     description: "This CTA points to an official employer page, but it should be checked before publishing as an exact role link.",
   };
+}
+
+export function getActiveJobs(jobs: JobListing[]) {
+  return jobs
+    .filter((job) => getJobStatus(job) === "active")
+    .sort((a, b) => new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime());
+}
+
+export function getLatestActiveJobs(jobs: JobListing[], limit: number) {
+  return getActiveJobs(jobs).slice(0, limit);
 }
 
 export function getJobDataQualityWarnings(job: JobListing) {
@@ -146,10 +157,6 @@ export function filterJobs(jobs: JobListing[], filters: JobFilters, now = new Da
   }).sort((a, b) => {
     if (filters.sort === "verified") {
       return new Date(b.lastVerifiedAt).getTime() - new Date(a.lastVerifiedAt).getTime();
-    }
-
-    if (filters.sort === "featured") {
-      return Number(Boolean(b.isFeatured)) - Number(Boolean(a.isFeatured));
     }
 
     return new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime();

@@ -8,10 +8,12 @@ import { GuideCard } from "@/components/guide-card";
 import { JobCard } from "@/components/job-card";
 import { SectionHeading } from "@/components/section-heading";
 import { getJobs } from "@/lib/job-source";
+import { getActiveJobs, getLatestActiveJobs } from "@/lib/jobs";
 
 export default async function HomePage() {
   const jobs = await getJobs();
-  const featuredJobs = jobs.filter((job) => job.isFeatured).slice(0, 4);
+  const activeJobs = getActiveJobs(jobs);
+  const latestJobs = getLatestActiveJobs(jobs, 4);
   const featuredGuides = getAllGuides().slice(0, 6);
 
   return (
@@ -40,7 +42,7 @@ export default async function HomePage() {
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             <div className="rounded-4xl border border-ink/10 bg-white/80 p-5 shadow-sm">
               <BriefcaseBusiness className="h-5 w-5 text-ink" />
-              <p className="mt-3 text-2xl font-semibold text-ink">{jobs.length}</p>
+              <p className="mt-3 text-2xl font-semibold text-ink">{activeJobs.length}</p>
               <p className="text-sm text-slate">Curated official-role links</p>
             </div>
             <div className="rounded-4xl border border-ink/10 bg-white/80 p-5 shadow-sm">
@@ -84,16 +86,16 @@ export default async function HomePage() {
       <section className="mx-auto max-w-7xl px-6 py-12">
         <div className="flex items-end justify-between gap-6">
           <SectionHeading
-            eyebrow="Featured roles"
-            title="Fresh, curated roles with direct paths to official applications."
-            description="Every listing includes its verification timestamp, core context, and a prep path connected to the role family."
+            eyebrow="Latest roles"
+            title="Newest active roles with direct paths to official applications."
+            description="Recently posted active listings from official career pages, ready to scan by company, role family, and location."
           />
           <Link href="/jobs" className="hidden text-sm font-medium text-ink md:inline-flex">
             See all jobs
           </Link>
         </div>
         <div className="mt-10 grid gap-6 xl:grid-cols-2">
-          {featuredJobs.map((job) => (
+          {latestJobs.map((job) => (
             <JobCard key={job.slug} job={job} />
           ))}
         </div>
