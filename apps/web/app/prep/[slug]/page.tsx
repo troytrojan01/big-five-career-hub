@@ -30,7 +30,7 @@ export async function generateMetadata({
 
   return {
     title: guide.title,
-    description: `${guide.company} interview prep for ${guide.roleFamily}.`,
+    description: `${guide.company} interview prep notes for ${guide.roleFamily}.`,
     alternates: {
       canonical: absoluteUrl(`/prep/${guide.slug}`),
     },
@@ -59,7 +59,7 @@ export default async function GuidePage({
     "@context": "https://schema.org",
     "@type": "Article",
     headline: guide.title,
-    description: `${guide.company} interview prep guide for ${guide.roleFamily}`,
+    description: `${guide.company} interview prep notes for ${guide.roleFamily}`,
     url: absoluteUrl(`/prep/${guide.slug}`),
     author: {
       "@type": "Organization",
@@ -79,7 +79,7 @@ export default async function GuidePage({
           </div>
           <h1 className="mt-6 font-serif text-5xl text-ink">{guide.title}</h1>
           <p className="mt-4 text-lg leading-8 text-slate">
-            Use this guide to focus your prep on the signals that matter most for this company and role family.
+            Use this source-linked note to map the company signals that matter most for this role family.
           </p>
           <div className="mt-6 flex flex-wrap gap-2">
             {guide.tags.map((tag) => (
@@ -123,7 +123,7 @@ export default async function GuidePage({
             <p className="text-sm uppercase tracking-[0.18em] text-sand/70">Next step</p>
             <h2 className="mt-4 text-2xl font-semibold">Turn prep into applications.</h2>
             <p className="mt-4 leading-7 text-sand/80">
-              Pair this guide with active curated roles for the same company and role family, then use the company hub to map behavioral stories.
+              Pair this note with active curated roles for the same company and role family, then use the company hub to map behavioral stories.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link href={`/jobs?company=${guide.company}&roleFamily=${encodeURIComponent(guide.roleFamily)}`} className="rounded-full bg-white px-5 py-3 text-sm font-medium text-ink">
@@ -147,7 +147,7 @@ export default async function GuidePage({
           ) : null}
 
           <section>
-            <h2 className="text-2xl font-semibold text-ink">Related guides</h2>
+            <h2 className="text-2xl font-semibold text-ink">Related prep notes</h2>
             <div className="mt-4 grid gap-4">
               {relatedGuides.map((relatedGuide) => (
                 <GuideCard key={relatedGuide.slug} guide={relatedGuide} />

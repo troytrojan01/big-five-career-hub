@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { ArrowRight, BriefcaseBusiness, GraduationCap, Sparkles } from "lucide-react";
 
-import { companies, getAllGuides } from "@bigfive/content";
+import { companies, getAllGuides, resources } from "@bigfive/content";
 
 import { CompanyCard } from "@/components/company-card";
-import { GuideCard } from "@/components/guide-card";
+import { CompanyPrepCard } from "@/components/company-prep-card";
 import { JobCard } from "@/components/job-card";
 import { SectionHeading } from "@/components/section-heading";
 import { getJobs } from "@/lib/job-source";
@@ -14,7 +14,8 @@ export default async function HomePage() {
   const jobs = await getJobs();
   const activeJobs = getActiveJobs(jobs);
   const latestJobs = getLatestActiveJobs(jobs, 4);
-  const featuredGuides = getAllGuides().slice(0, 6);
+  const guides = getAllGuides();
+  const officialResources = resources.filter((resource) => resource.officialOrThirdParty === "official");
 
   return (
     <div className="pb-24">
@@ -28,7 +29,7 @@ export default async function HomePage() {
             The focused job search hub for Amazon, Apple, Google, Meta, and Microsoft.
           </h1>
           <p className="mt-8 max-w-2xl text-xl leading-9 text-slate">
-            Search curated official roles, understand how each company hires, and prepare with company-specific guides instead of scattered tabs and stale spreadsheets.
+            Search curated official roles, understand how each company hires, and prepare from company-specific hiring resources instead of scattered tabs and stale spreadsheets.
           </p>
           <div className="mt-10 flex flex-wrap gap-4">
             <Link href="/jobs" className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 font-medium text-sand transition hover:bg-ink/85">
@@ -36,7 +37,7 @@ export default async function HomePage() {
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link href="/prep" className="inline-flex items-center gap-2 rounded-full border border-ink/10 bg-white px-6 py-3 font-medium text-ink transition hover:border-ink/30">
-              Browse prep guides
+              Browse prep resources
             </Link>
           </div>
           <div className="mt-10 grid gap-4 md:grid-cols-3">
@@ -47,8 +48,8 @@ export default async function HomePage() {
             </div>
             <div className="rounded-4xl border border-ink/10 bg-white/80 p-5 shadow-sm">
               <GraduationCap className="h-5 w-5 text-ink" />
-              <p className="mt-3 text-2xl font-semibold text-ink">{getAllGuides().length}</p>
-              <p className="text-sm text-slate">Launch prep guides</p>
+              <p className="mt-3 text-2xl font-semibold text-ink">{officialResources.length}</p>
+              <p className="text-sm text-slate">Official hiring resources</p>
             </div>
             <div className="rounded-4xl border border-ink/10 bg-white/80 p-5 shadow-sm">
               <Sparkles className="h-5 w-5 text-ink" />
@@ -63,7 +64,7 @@ export default async function HomePage() {
             <ul className="mt-5 space-y-4 text-base leading-7 text-sand/90">
               <li>Official apply links only</li>
               <li>Search filters and posted-date controls</li>
-              <li>Interview prep across five core role families</li>
+              <li>Official interview and hiring resources by company</li>
               <li>Built for later mobile alerts and saved jobs</li>
             </ul>
           </div>
@@ -105,16 +106,16 @@ export default async function HomePage() {
         <div className="flex items-end justify-between gap-6">
           <SectionHeading
             eyebrow="Prep library"
-            title="Focused playbooks for the five role families that drive the most intent."
-            description="Start with company-specific guide pages for software, product, data, design, and TPM paths."
+            title="Company prep libraries with official hiring material up front."
+            description="Start from the company, then use verified employer resources and source-linked notes without pretending every role family has a deep custom guide."
           />
           <Link href="/prep" className="hidden text-sm font-medium text-ink md:inline-flex">
-            See all guides
+            See all prep resources
           </Link>
         </div>
         <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {featuredGuides.map((guide) => (
-            <GuideCard key={guide.slug} guide={guide} />
+          {companies.map((company) => (
+            <CompanyPrepCard key={company.slug} company={company} guides={guides} resources={resources} />
           ))}
         </div>
       </section>

@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     template: "%s | Big Five Career Hub",
   },
   description:
-    "Search curated official jobs from Amazon, Apple, Google, Meta, and Microsoft, then prepare with company-specific interview guides and hiring resources.",
+    "Search curated official jobs from Amazon, Apple, Google, Meta, and Microsoft, then prepare with company-specific hiring and interview resources.",
   openGraph: {
     title: "Big Five Career Hub",
     description:

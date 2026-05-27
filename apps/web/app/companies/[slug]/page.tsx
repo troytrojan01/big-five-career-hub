@@ -98,7 +98,7 @@ export default async function CompanyHubPage({
             </div>
           </section>
           <section>
-            <h2 className="text-2xl font-semibold text-ink">Prep guides</h2>
+            <h2 className="text-2xl font-semibold text-ink">Prep notes</h2>
             <div className="mt-5 grid gap-6 md:grid-cols-2">
               {relatedGuides.map((guide) => (
                 <GuideCard key={guide.slug} guide={guide} />

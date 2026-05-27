@@ -14,7 +14,7 @@ export function GuideCard({ guide }: { guide: GuideFrontmatter }) {
       </div>
       <h3 className="mt-5 text-xl font-semibold text-ink">{guide.title}</h3>
       <p className="mt-4 text-sm text-slate">{guide.tags.join(" • ")}</p>
-      <p className="mt-5 text-sm font-medium uppercase tracking-[0.18em] text-slate">Open guide</p>
+      <p className="mt-5 text-sm font-medium uppercase tracking-[0.18em] text-slate">Open prep note</p>
     </Link>
   );
 }
