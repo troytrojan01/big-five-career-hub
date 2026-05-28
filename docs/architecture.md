@@ -8,10 +8,10 @@ flowchart TB
   admin[Admin user]
   vercel[Vercel Next.js app<br/>apps/web]
   pages[App Router pages<br/>home, jobs, prep, companies, resources]
-  api[Route handlers<br/>waitlist, admin import, job sync, health]
+  api[Route handlers<br/>admin import, job sync, health]
   content[Content package<br/>packages/content<br/>companies, prep notes, resources, static job fallback]
   dbpkg[DB package<br/>packages/db<br/>Drizzle schema and client]
-  postgres[(PostgreSQL / Supabase<br/>job_listings, job_sync_runs,<br/>waitlist_signups)]
+  postgres[(PostgreSQL / Supabase<br/>job_listings, job_sync_runs)]
   supabase[Supabase REST API<br/>optional runtime read/write path]
   official[Official career sites<br/>Amazon, Apple, Google,<br/>Meta, Microsoft]
   cron[Vercel Cron<br/>/api/internal/sync-jobs]
@@ -51,7 +51,6 @@ flowchart TB
 4. If no database read path is available, the app falls back to the checked-in official career-page snapshot.
 5. Admin imports validate CSV/JSON through `parseImportText()` and persist via Supabase REST or PostgreSQL.
 6. Vercel Cron calls `/api/internal/sync-jobs`, which fetches official career pages, normalizes listings, upserts active jobs, and records sync runs.
-7. Waitlist submissions write to `waitlist_signups` through the database storage layer.
 
 ## Deployment Shape
 

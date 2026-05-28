@@ -1,11 +1,10 @@
 import { and, eq } from "drizzle-orm";
 
-import { closeDb, companies, getDb, jobListings, waitlistSignups } from "@bigfive/db";
+import { closeDb, companies, getDb, jobListings } from "@bigfive/db";
 
 import { parseImportText } from "../apps/web/lib/import-jobs";
 
 const runId = new Date().toISOString().replace(/[-:.TZ]/g, "");
-const smokeEmail = `smoke+${runId}@bigfivecareerhub.test`;
 const smokeExternalJobId = `smoke-${runId}`;
 
 async function main() {
@@ -24,21 +23,6 @@ async function main() {
     const seededJobs = await db.select({ slug: jobListings.slug }).from(jobListings).limit(1);
     if (!seededJobs.length) {
       throw new Error("Expected at least one seeded job listing.");
-    }
-
-    await db.insert(waitlistSignups).values({
-      email: smokeEmail,
-      source: "smoke-test",
-    });
-
-    const waitlistRows = await db
-      .select({ email: waitlistSignups.email })
-      .from(waitlistSignups)
-      .where(eq(waitlistSignups.email, smokeEmail))
-      .limit(1);
-
-    if (waitlistRows[0]?.email !== smokeEmail) {
-      throw new Error("Waitlist signup smoke insert was not readable.");
     }
 
     const now = new Date().toISOString();
@@ -86,15 +70,11 @@ async function main() {
       throw new Error("Admin import smoke insert was not readable.");
     }
 
-    console.log(
-      `Live DB smoke test passed: ${companyRows.length} companies, waitlist write/read/delete, admin import write/read/delete.`,
-    );
+    console.log(`Live DB smoke test passed: ${companyRows.length} companies and admin import write/read/delete.`);
   } finally {
     await db
       .delete(jobListings)
       .where(and(eq(jobListings.sourceCompany, "google"), eq(jobListings.externalJobId, smokeExternalJobId)));
-
-    await db.delete(waitlistSignups).where(eq(waitlistSignups.email, smokeEmail));
   }
 }
 

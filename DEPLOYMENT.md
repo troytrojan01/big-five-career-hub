@@ -10,7 +10,7 @@ This app is ready to deploy as a Next.js application, with a few production envi
 
 ## Required Once Database Features Are Enabled
 
-- `DATABASE_URL`: PostgreSQL connection string for runtime reads/writes such as waitlist persistence, seeds, and admin import commits. Prefer a least-privileged app role.
+- `DATABASE_URL`: PostgreSQL connection string for runtime reads/writes such as job reads, seeds, sync runs, and admin import commits. Prefer a least-privileged app role.
 - `MIGRATION_DATABASE_URL`: optional privileged PostgreSQL connection string for `npm run db:migrate`. If omitted, migrations fall back to `DATABASE_URL`.
 
 ## Optional Environment Variables
@@ -43,7 +43,7 @@ When `DATABASE_URL` points at a live database, run this smoke check:
 npm run smoke:db
 ```
 
-It confirms seeded company/job reads plus temporary waitlist and admin-import writes, then removes the smoke rows.
+It confirms seeded company/job reads plus a temporary admin-import write, then removes the smoke row.
 
 Use this content check before a public launch:
 

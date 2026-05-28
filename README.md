@@ -38,9 +38,9 @@ A monorepo for a focused Big Tech jobs and interview prep hub covering Amazon, A
 ## Notes
 
 - Jobs are manually curated and link to official employer apply pages.
-- The waitlist and admin import endpoints expect a live PostgreSQL `DATABASE_URL`.
+- Admin import and job sync persistence expect a live PostgreSQL `DATABASE_URL` or Supabase REST configuration.
 - Use a least-privileged app role for `DATABASE_URL` when possible. Use `MIGRATION_DATABASE_URL` only for schema migrations that need elevated database privileges.
-- `npm run smoke:db` verifies live database reads plus temporary waitlist and admin-import writes, then cleans up its test rows.
+- `npm run smoke:db` verifies live database reads plus a temporary admin-import write, then cleans up its test row.
 - If the database is not configured, the import flow still provides validation previews.
 - Seed data pulls the launch companies and curated jobs from `@bigfive/content`.
 - Admin job operations are available at `/admin/jobs`; CSV/JSON import validation is available at `/admin/import`.
