@@ -137,30 +137,49 @@ function isAmazonUnitedStatesJob(job: AmazonSearchResponse["jobs"][number]) {
 }
 
 async function fetchAmazonJobs() {
-  const pages = [0, 20, 40];
+  const queries = [
+    "",
+    "cloud solution architect",
+    "solution architect",
+    "solutions architect",
+    "solutions engineer",
+    "security engineer",
+    "security consultant",
+  ];
+  const pages = [0, 20];
   const jobs = await Promise.all(
-    pages.map(async (offset) => {
-      const url = `${AMAZON_BASE_URL}/en/search.json?loc_query=United+States&result_limit=20&offset=${offset}`;
-      const data = await fetchJson<AmazonSearchResponse>(url);
+    queries.flatMap((query) =>
+      pages.map(async (offset) => {
+        const url = new URL("/en/search.json", AMAZON_BASE_URL);
+        url.searchParams.set("loc_query", "United States");
+        url.searchParams.set("result_limit", "20");
+        url.searchParams.set("offset", String(offset));
 
-      return data.jobs
-        .filter((job) => isAmazonUnitedStatesJob(job))
-        .map((job) =>
-          buildJobListing({
-            sourceCompany: "amazon",
-            externalJobId: job.id_icims,
-            title: job.title,
-            team: parseAmazonTeam(job.team) || job.job_family || job.company_name || "Amazon",
-            location: job.normalized_location ?? job.location,
-            workMode: parseAmazonWorkMode(job.locations),
-            shortSummary: job.description_short ?? job.description ?? `${job.title} at Amazon.`,
-            officialApplyUrl: new URL(job.job_path, AMAZON_BASE_URL).toString(),
-            postedAt: job.posted_date,
-            roleFamilyHint: job.job_family ?? job.job_category,
-          }),
-        )
-        .filter((job): job is JobListing => Boolean(job));
-    }),
+        if (query) {
+          url.searchParams.set("base_query", query);
+        }
+
+        const data = await fetchJson<AmazonSearchResponse>(url.toString());
+
+        return data.jobs
+          .filter((job) => isAmazonUnitedStatesJob(job))
+          .map((job) =>
+            buildJobListing({
+              sourceCompany: "amazon",
+              externalJobId: job.id_icims,
+              title: job.title,
+              team: parseAmazonTeam(job.team) || job.job_family || job.company_name || "Amazon",
+              location: job.normalized_location ?? job.location,
+              workMode: parseAmazonWorkMode(job.locations),
+              shortSummary: job.description_short ?? job.description ?? `${job.title} at Amazon.`,
+              officialApplyUrl: new URL(job.job_path, AMAZON_BASE_URL).toString(),
+              postedAt: job.posted_date,
+              roleFamilyHint: job.job_family ?? job.job_category,
+            }),
+          )
+          .filter((job): job is JobListing => Boolean(job));
+      }),
+    ),
   );
 
   return dedupeJobs(jobs.flat());
@@ -181,7 +200,18 @@ function parseAppleCards(html: string) {
 }
 
 async function fetchAppleJobs() {
-  const queries = ["software", "product manager", "machine learning", "designer", "program manager"];
+  const queries = [
+    "software",
+    "product manager",
+    "machine learning",
+    "designer",
+    "program manager",
+    "solution architect",
+    "solutions architect",
+    "solutions engineer",
+    "security engineer",
+    "security consultant",
+  ];
   const htmlPages = await Promise.all(
     queries.flatMap((query) =>
       [1, 2].map((page) =>
@@ -262,10 +292,26 @@ function parseGoogleDetail(detailHtml: string) {
 }
 
 async function fetchGoogleJobs() {
+  const queryPages = [
+    "cloud solution architect",
+    "solution architect",
+    "solutions engineer",
+    "security engineer",
+    "security consultant",
+  ];
   const listingPages = await Promise.all(
-    [1, 2].map((page) =>
-      fetchText(new URL(`jobs/results/?location=United%20States&sort_by=date&page=${page}`, GOOGLE_BASE_URL).toString()),
-    ),
+    [
+      ...[1, 2].map((page) =>
+        new URL(`jobs/results/?location=United%20States&sort_by=date&page=${page}`, GOOGLE_BASE_URL).toString(),
+      ),
+      ...queryPages.map((query) => {
+        const url = new URL("jobs/results/", GOOGLE_BASE_URL);
+        url.searchParams.set("location", "United States");
+        url.searchParams.set("sort_by", "date");
+        url.searchParams.set("q", query);
+        return url.toString();
+      }),
+    ].map((url) => fetchText(url)),
   );
 
   const listingCards = dedupeJobs(
@@ -309,6 +355,12 @@ async function fetchMicrosoftJobs() {
     "technical program manager",
     "machine learning",
     "designer",
+    "cloud solution architect",
+    "solution architect",
+    "solutions architect",
+    "solutions engineer",
+    "security engineer",
+    "security consultant",
   ];
 
   const results = await Promise.all(

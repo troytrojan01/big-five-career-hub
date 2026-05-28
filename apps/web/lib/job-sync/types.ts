@@ -5,7 +5,8 @@ export type TargetRoleFamily =
   | "Product Management"
   | "Data / ML"
   | "Design / UX"
-  | "TPM / Program Management";
+  | "TPM / Program Management"
+  | "Solutions & Security";
 
 export interface RawSyncJob {
   sourceCompany: CompanySlug;

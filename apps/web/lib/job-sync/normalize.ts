@@ -10,6 +10,7 @@ const TARGET_FAMILIES: TargetRoleFamily[] = [
   "Data / ML",
   "Design / UX",
   "TPM / Program Management",
+  "Solutions & Security",
 ];
 const SLUG_MAX_LENGTH = 180;
 
@@ -153,6 +154,30 @@ export function deriveLevel(title: string, hint?: string | null) {
 
 export function deriveRoleFamily(title: string, hint?: string | null): TargetRoleFamily | null {
   const value = `${title} ${hint ?? ""}`.toLowerCase();
+
+  if (
+    value.includes("cloud solution architect") ||
+    value.includes("cloud solutions architect") ||
+    value.includes("solution architect") ||
+    value.includes("solutions architect") ||
+    value.includes("solution consultant") ||
+    value.includes("solutions consultant") ||
+    value.includes("security consultant") ||
+    value.includes("cybersecurity consultant") ||
+    value.includes("cloud consultant") ||
+    value.includes("solutions engineer") ||
+    value.includes("solution engineer") ||
+    value.includes("sales engineer") ||
+    value.includes("customer engineer") ||
+    value.includes("partner engineer") ||
+    value.includes("security engineer") ||
+    value.includes("cybersecurity engineer") ||
+    value.includes("security architect") ||
+    value.includes("cloud architect") ||
+    /\bcsa\b/.test(value)
+  ) {
+    return "Solutions & Security";
+  }
 
   if (
     value.includes("technical program manager") ||

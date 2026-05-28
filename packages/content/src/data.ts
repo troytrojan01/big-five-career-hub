@@ -59,6 +59,7 @@ export const roleFamilies = [
   "Data & ML",
   "Design & UX",
   "TPM / Program Management",
+  "Solutions & Security",
 ] as const;
 
 export const curatedJobs: JobListing[] = [

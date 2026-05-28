@@ -9,6 +9,10 @@ describe("job sync normalization", () => {
     expect(deriveRoleFamily("Machine Learning Research Scientist")).toBe("Data / ML");
     expect(deriveRoleFamily("Senior Product Designer")).toBe("Design / UX");
     expect(deriveRoleFamily("Technical Program Manager")).toBe("TPM / Program Management");
+    expect(deriveRoleFamily("Cloud Solution Architect (CSA)")).toBe("Solutions & Security");
+    expect(deriveRoleFamily("Senior Solutions Engineer")).toBe("Solutions & Security");
+    expect(deriveRoleFamily("Security Engineer")).toBe("Solutions & Security");
+    expect(deriveRoleFamily("Security Consultant")).toBe("Solutions & Security");
   });
 
   it("maps levels from title hints", () => {
@@ -58,5 +62,20 @@ describe("job sync normalization", () => {
     });
 
     expect(job).toBeNull();
+  });
+
+  it("keeps solutions and security roles in the job import set", () => {
+    const job = buildJobListing({
+      sourceCompany: "microsoft",
+      externalJobId: "CSA-123",
+      title: "Cloud Solution Architect",
+      team: "Customer Success",
+      location: "United States",
+      shortSummary: "Help customers design and secure cloud solutions.",
+      officialApplyUrl: "https://apply.careers.microsoft.com/careers/job/CSA-123?domain=microsoft.com",
+      postedAt: "2026-05-16T00:00:00.000Z",
+    });
+
+    expect(job?.roleFamily).toBe("Solutions & Security");
   });
 });
