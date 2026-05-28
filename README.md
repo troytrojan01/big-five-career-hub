@@ -8,6 +8,10 @@ A monorepo for a focused Big Tech jobs and interview prep hub covering Amazon, A
 - `packages/db`: PostgreSQL schema and Drizzle client
 - `packages/content`: MDX company hubs, prep guides, resources, and curated job seeds
 
+## Architecture
+
+- [Architecture diagram](docs/architecture.md)
+
 ## Quick Start
 
 1. Copy `.env.example` to `.env`.
